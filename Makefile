@@ -1,7 +1,7 @@
 V = 1
 SOURCE_DIR=src
-BUILD_DIR = build
-FILESYSTEM_DIR = filesystem
+BUILD_DIR=build
+FILESYSTEM_DIR=filesystem
 
 all: hello.z64
 .PHONY: all
