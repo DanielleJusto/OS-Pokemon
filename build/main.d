@@ -1,1 +1,1 @@
-build/main.o: src/main.c src/menu.c
+build/main.o: src/main.c src/menu.c src/battle.c

@@ -40,8 +40,8 @@ int menu_loop(void)
 	dfs_init(DFS_DEFAULT_LOCATION);
 
     sprite = sprite_load("rom:/pixelPikachu.sprite");
-    title = sprite_load("rom:/TITLE.sprite");
-    textOverlay = sprite_load("rom:/textOverlay.sprite");
+    title = sprite_load("rom:/menu/TITLE.sprite");
+    textOverlay = sprite_load("rom:/menu/textOverlay.sprite");
 
 	bool game_start = false;
 	
