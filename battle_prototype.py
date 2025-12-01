@@ -6,7 +6,7 @@ import sys
 class Pokemon:
     def __init__(self, name:str, health:int, attack:int):
         self.name = name
-        self.health = 10
+        self.health = 15
         self.attack = attack
 
 class Player:
@@ -105,7 +105,7 @@ def turn(player:Player, opp:Player):
 
 
 def main():
-
+    # attack1 = {1: }
     pikachu = Pokemon("Pikachu", 10, 2)
     squirtle = Pokemon("Squirtle", 10, 1)
     p1 = Player("Player1", pikachu)
