@@ -25,10 +25,9 @@ static sprite_t *selfHP;
 // static sprite_t *thunder;
 
 int battle = 0; 
-// int p1_damage = 0;
-// int p2_damage = 0;
+int p1_damage = 0;
+int p2_damage = 0;
 int turn = 0; 
-
 
 int fightChoice = 0;
 bool attackSelected = false;
@@ -45,17 +44,12 @@ int battle_loop(void)
     debug_init_isviewer();
 
     console_init();
-
     joypad_init();
 
     debug_init_usblog();
     console_set_debug(true);
-
+    
     display_init(RESOLUTION_320x240, DEPTH_16_BPP, 2, GAMMA_NONE, FILTERS_RESAMPLE);
-	dfs_init(DFS_DEFAULT_LOCATION);
-
-    // players_init();    // Initialize Players
-    // pokemon_init();    // Initialize Pokemon
 
     int choice = 0;
 
@@ -145,7 +139,7 @@ int battle_loop(void)
 		            //     thunder,				    // Load this spritesheet
 		            //     0 		                
 	                // );
-                    
+
                     choice = 0;
                     fightChoice = 0;
                 }
