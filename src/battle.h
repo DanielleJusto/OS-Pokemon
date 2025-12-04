@@ -52,16 +52,16 @@ int setup(struct Player *p1, struct Player *p2, struct Pokemon *pokemon1, struct
 
     /* Initialize Player 1 */
     p1->pokemon = pokemon1;
-    p1->health = 10;
-    p1->max_health = 10;
+    p1->health = pokemon1->health;
+    p1->max_health = pokemon1->health;
     p1->attacks = pokemon1->attacks;
     p1->items[0] = 1; // 1 potion
     p1->items[0] = 1; // 1 pokeball
      
     /* Initialize Player 2 */
     p2->pokemon = pokemon2;
-    p2->health = 10;
-    p2->max_health = 10;
+    p2->health = pokemon2->health;
+    p2->max_health = pokemon1->health;
     p2->attacks = pokemon2->attacks;
     p2->items[0] = 1; // 1 potion
     p2->items[0] = 1; // 1 pokeball
@@ -86,23 +86,23 @@ int damage(struct Player *opponent, int damage){
 Uses an item given the item's index (0 - Potion, 1 - Pokeball)
 Returns success of operation.
 */
-bool use_item(struct Player *player, int item){
-    if (player->items[item]) == 0){
-        return false;
-    } else {
-        player->items[item]--;
-        if (item == 0){ // If potion, use potion
-            int health = player->health + 20;
-            if (health > player->max_health) {
-                player->max_health = max_health; // set upper bound
-             } else {
-                player->health = health;
-             }
-        } else { // If pokeball, use 
-            continue;
-        }
-    }
-}
+// bool use_item(struct Player *player, int item){
+//     if (player->items[item]) == 0){
+//         return false;
+//     } else {
+//         player->items[item]--;
+//         if (item == 0){ // If potion, use potion
+//             int health = player->health + 20;
+//             if (health > player->max_health) {
+//                 player->max_health = max_health; // set upper bound
+//              } else {
+//                 player->health = health;
+//              }
+//         } else { // If pokeball, use 
+//             continue;
+//         }
+//     }
+// }
 
 #endif
 
