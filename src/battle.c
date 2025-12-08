@@ -24,8 +24,8 @@ static sprite_t *selfHP;
 static sprite_t *thunder;
 
 int select = 0;
-int self_damage = 0;
-int enemy_damage = 0;
+// int self_damage = 0;
+// int enemy_damage = 0;
 int turn = 0;
 
 int fightChoice = 0;
@@ -167,7 +167,7 @@ int battle_loop(struct Player *player, struct Player *opp)
                     
                     // enemy_damage++;
                     // enemy_damage++;
-                    damage(opp, 3);
+                    damage(opp, 3); // Change health of player
                     choice = 0;
                     fightChoice = 0;
                 }
@@ -281,14 +281,15 @@ int battle_loop(struct Player *player, struct Player *opp)
                     graphics_draw_text(disp, 180, 75, "POTION");
                     graphics_draw_text(disp, 185, 90, "+20 HP");
                     
-                    if(self_damage > 0){
+                    if(15-player->health > 0){
                         graphics_draw_text(disp, 185, 140, "use potion?");
                         if(ckeys.a){
-                            self_damage--;
+                            // self_damage--;
+                            heal(player, 20);
                             choice = 0;
                             itemsFrame = 0;
                         }
-                    } else if(self_damage == 0){
+                    } else if(15-player->health == 0){
                         graphics_draw_text(disp, 185, 140, "FULL HEALTH");
                     }
                     
@@ -303,6 +304,7 @@ int battle_loop(struct Player *player, struct Player *opp)
                         itemsFrame = 2;
                     }
                     if(ckeys.a){
+                        heal(player, 20); // just changed
                         itemsFrame = 1;
                     }
                 }

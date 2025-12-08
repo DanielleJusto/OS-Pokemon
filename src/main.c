@@ -36,17 +36,6 @@ int main(void)
 
 	setup(p1, p2, poke1, poke2);
 	battle_loop(p1,p2);
-
-	// bool gameEnd = false;
-	// while(gameEnd == false){
-	//  	// battle_loop(p1,p2);
-	// 	// console_clear();
-	// 	// if(player1.health == 0 || player2.health == 0) gameEnd = true;
-	// 	// // Issue here, not entering battle loop 2. Perhaps free sprites?
-	// 	// battle_loop(p2,p1);
-	// 	// if(player1.health == 0 || player2.health == 0) gameEnd = true;
-	// 	// console_clear();
-	// }
 	printf("Game End!\n");
 	return 0;
 }
