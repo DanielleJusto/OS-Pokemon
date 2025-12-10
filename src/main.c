@@ -12,6 +12,7 @@
 #include <malloc.h>
 #include <rdpq.h>
 #include <rdpq_sprite.h>
+// #include "battle_spaceSaver.c"
 // #include "SLL.c"
 
 static sprite_t *self;
@@ -22,8 +23,8 @@ static sprite_t *battleground;
 int main(void)
 {
 	console_init();
-	// menu_loop();
-	// explore_loop();
+	menu_loop();
+
 	struct Player player1;
 	struct Player player2;
 	struct Player *p1 = &player1;
@@ -35,7 +36,11 @@ int main(void)
 	struct Pokemon *poke2 = &pokemon2;
 
 	setup(p1, p2, poke1, poke2);
+	sprite_t* avatar = choose_character();
+	explore_loop(avatar);
+	// explore_loop();
+	// damage(p1, 10);
 	battle_loop(p1,p2);
-	printf("Game End!\n");
+	// printf("Game End!\n");
 	return 0;
 }

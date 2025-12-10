@@ -1,5 +1,4 @@
 // #include <stdio.h>
-
 // #include <libdragon.h>
 #include <math.h>
 #include <stdint.h>
@@ -24,8 +23,6 @@ static sprite_t *selfHP;
 static sprite_t *thunder;
 
 int select = 0;
-// int self_damage = 0;
-// int enemy_damage = 0;
 int turn = 0;
 
 int fightChoice = 0;
@@ -34,33 +31,23 @@ bool attackSelected = false;
 int itemsChoice = 0;
 int itemsFrame = 0;
 
-// char health_str1[10];
-// char health_str_2[10];
-
 int battle_loop(struct Player *player, struct Player *opp)
 {
     int dfs_init(uint32_t base_fs_loc);
     dfs_init(DFS_DEFAULT_LOCATION);
-
-
     debug_init_isviewer();
-
     console_init();
-
     joypad_init();
-
     debug_init_usblog();
     console_set_debug(true);
-
-
     display_init(RESOLUTION_320x240, DEPTH_16_BPP, 2, GAMMA_NONE, FILTERS_RESAMPLE);
 	dfs_init(DFS_DEFAULT_LOCATION);
 
     int choice = 0;
     int i = 0;
-
     bool fight = false;
     bool items = false;
+    int *inventory = player->inventory;
 
     thunder = sprite_load("rom:/battle/thunder.sprite");
     self = sprite_load("rom:/battle/self.sprite");
@@ -74,7 +61,9 @@ int battle_loop(struct Player *player, struct Player *opp)
     selfHP = sprite_load("rom:/battle/selfHP.sprite");
     enemyHP = sprite_load("rom:/battle/enemyHP.sprite");
 
-    while(1){
+    bool gameEnd = false;
+
+    while(gameEnd != true){
     surface_t* disp = display_get();
     joypad_poll();
     joypad_buttons_t ckeys = joypad_get_buttons_pressed(JOYPAD_PORT_1);
@@ -168,6 +157,7 @@ int battle_loop(struct Player *player, struct Player *opp)
                     // enemy_damage++;
                     // enemy_damage++;
                     damage(opp, 3); // Change health of player
+                    // choiceMade = true;
                     choice = 0;
                     fightChoice = 0;
                 }
@@ -226,6 +216,7 @@ int battle_loop(struct Player *player, struct Player *opp)
 	                // );
                     // enemy_damage++;
                     damage(opp, 1);
+                    // choiceMade = true;s
                     choice = 0;
                     fightChoice = 0;
                 }
@@ -277,35 +268,46 @@ int battle_loop(struct Player *player, struct Player *opp)
                         choice = 0;
                         itemsFrame = 0;
                     }
-                }else if(itemsFrame == 2){
+                } else if(itemsFrame == 2){
                     graphics_draw_text(disp, 180, 75, "POTION");
                     graphics_draw_text(disp, 185, 90, "+20 HP");
-                    
-                    if(15-player->health > 0){
+                    if (inventory[0] == 1){
+                        graphics_draw_text(disp, 185, 105, "Quantity: 1");
+                    } else if (inventory[0] == 0){
+                        graphics_draw_text(disp, 185, 105, "Quantity: 0");
+                    }
+                    if(15-player->health > 0 && 15-player->health != 0){
                         graphics_draw_text(disp, 185, 140, "use potion?");
-                        if(ckeys.a){
+                        if(ckeys.a && itemsFrame == 2){
                             // self_damage--;
+                            // choiceMade = true;
                             heal(player, 20);
                             choice = 0;
                             itemsFrame = 0;
                         }
-                    } else if(15-player->health == 0){
+                    } else if(15-player->health == 0 && inventory[0]==1){
                         graphics_draw_text(disp, 185, 140, "FULL HEALTH");
+                    } else if(inventory[0]==0){
+                        graphics_draw_text(disp, 185, 140, "CANNOT USE");
                     }
-                    
                     if(ckeys.d_down){
                         itemsFrame = 3;
                     }
-                }else if(itemsFrame == 3){
+                } else if(itemsFrame == 3){
                     graphics_draw_text(disp, 180, 75, "POTION");
                     graphics_draw_text(disp, 185, 90, "+20 HP");
-                    graphics_draw_text(disp, 185, 140, "use potion?");
-                    if(ckeys.d_up){
-                        itemsFrame = 2;
+                    if(15-player->health > 0 && 15-player->health != 0){
+                        graphics_draw_text(disp, 185, 140, "use potion?");
+                    } else if(15-player->health == 0 && inventory[0]==1){
+                        graphics_draw_text(disp, 185, 140, "FULL HEALTH");
+                    } else if(inventory[0]==0){
+                        graphics_draw_text(disp, 185, 140, "CANNOT USE");
                     }
                     if(ckeys.a){
-                        heal(player, 20); // just changed
                         itemsFrame = 1;
+                    }
+                    if(ckeys.d_up){
+                        itemsFrame = 2;
                     }
                 }
                 
@@ -332,6 +334,9 @@ int battle_loop(struct Player *player, struct Player *opp)
             choice = 0;
         }
     } else if(choice == 0) {
+        // if (choiceMade == true){
+        //     gameEnd = true;
+        // }
         if(ckeys.a) {
             choice = 1;
         }

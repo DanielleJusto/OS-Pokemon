@@ -24,7 +24,7 @@ struct Player {
     int max_health;
     int health;
     int *attacks;
-    int items[2]; // array 2
+    int inventory[2]; // array 2
 };
 
 extern struct Player player1;
@@ -55,16 +55,16 @@ int setup(struct Player *p1, struct Player *p2, struct Pokemon *pokemon1, struct
     p1->health = pokemon1->health;
     memcpy(&p1->max_health, &p1->health, sizeof(int));
     p1->attacks = pokemon1->attacks;
-    p1->items[0] = 1; // 1 potion
-    p1->items[0] = 1; // 1 pokeball
+    p1->inventory[0] = 1; // 1 potion
+    p1->inventory[0] = 1; // 1 pokeball
      
     /* Initialize Player 2 */
     p2->pokemon = pokemon2;
     p2->health = pokemon2->health;
-    p2->max_health = pokemon2->health;
+    memcpy(&p2->max_health, &p2->health, sizeof(int));
     p2->attacks = pokemon2->attacks;
-    p2->items[0] = 1; // 1 potion
-    p2->items[0] = 1; // 1 pokeball
+    p2->inventory[0] = 1; // 1 potion
+    p2->inventory[0] = 1; // 1 pokeball
 
     return 0;
 }
@@ -82,12 +82,17 @@ int damage(struct Player *opponent, int damage){
     return 0;
 }
 
+/*
+Heals player
+*/
 int heal(struct Player *player, int heal_points){
     int health = player->health + heal_points;
     if (health > player->max_health){
         player->health = player->max_health; // set upper bound
+        player->inventory[0]--;
     } else {
         player->health = health;
+        player->inventory[0]--;
     }; 
     return 0;
 }   
