@@ -36,11 +36,17 @@ int main(void)
 	struct Pokemon *poke2 = &pokemon2;
 
 	setup(p1, p2, poke1, poke2);
-	sprite_t* avatar = choose_character();
-	explore_loop(avatar);
+	// sprite_t* avatar = choose_character();
+	// explore_loop(avatar);
 	// explore_loop();
 	// damage(p1, 10);
-	battle_loop(p1,p2);
-	// printf("Game End!\n");
+	bool gameEnd = false;
+	while(gameEnd == false){
+		battle_loop(p1,p2);
+		if (player1.health == 0 || player2.health == 0){gameEnd = true;}
+		battle_loop(p2,p1);
+		if (player1.health == 0 || player2.health == 0){gameEnd = true;}
+	}
+	printf("GAMEOVER!\n");
 	return 0;
 }

@@ -66,5 +66,9 @@ int menu_loop(void)
 			game_start = true;
 		}
 	}
+	sprite_free(sprite);
+	sprite_free(title);
+	sprite_free(textOverlay);
+	
 	return 0;
 }

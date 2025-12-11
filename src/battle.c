@@ -31,10 +31,14 @@ bool attackSelected = false;
 int itemsChoice = 0;
 int itemsFrame = 0;
 
+/*
+- Take current player and enemy as arguments
+- Add player pokemon sprites to struct?
+- Map health to player sprite 
+*/
+
 int battle_loop(struct Player *player, struct Player *opp)
 {
-    int dfs_init(uint32_t base_fs_loc);
-    dfs_init(DFS_DEFAULT_LOCATION);
     debug_init_isviewer();
     console_init();
     joypad_init();
@@ -93,8 +97,8 @@ int battle_loop(struct Player *player, struct Player *opp)
     // graphics_draw_text(disp, 15, 30, health_str2);
     // itoa(enemy->health, health_str1, 10);
 
-    graphics_draw_text(disp, 15, 15, "Charmander");
-    graphics_draw_text(disp, 200, 115, "Pikachu");
+    graphics_draw_text(disp, 15, 15, opp->pokemon->name);
+    graphics_draw_text(disp, 200, 115, player->pokemon->name);
 
     if(choice == 1) {
         if(fight == true){
@@ -157,6 +161,7 @@ int battle_loop(struct Player *player, struct Player *opp)
                     // enemy_damage++;
                     // enemy_damage++;
                     damage(opp, 3); // Change health of player
+                    gameEnd = true;
                     // choiceMade = true;
                     choice = 0;
                     fightChoice = 0;
@@ -216,6 +221,7 @@ int battle_loop(struct Player *player, struct Player *opp)
 	                // );
                     // enemy_damage++;
                     damage(opp, 1);
+                    gameEnd=true;
                     // choiceMade = true;s
                     choice = 0;
                     fightChoice = 0;
@@ -282,6 +288,7 @@ int battle_loop(struct Player *player, struct Player *opp)
                             // self_damage--;
                             // choiceMade = true;
                             heal(player, 20);
+                            gameEnd = true;
                             choice = 0;
                             itemsFrame = 0;
                         }
@@ -334,9 +341,6 @@ int battle_loop(struct Player *player, struct Player *opp)
             choice = 0;
         }
     } else if(choice == 0) {
-        // if (choiceMade == true){
-        //     gameEnd = true;
-        // }
         if(ckeys.a) {
             choice = 1;
         }
@@ -344,7 +348,7 @@ int battle_loop(struct Player *player, struct Player *opp)
             fight = true;
             items = false;
             select = 1;
-        }else if(ckeys.d_right){
+        } else if(ckeys.d_right){
             items = true;
             fight = false;
             select = 2;
@@ -367,5 +371,16 @@ int battle_loop(struct Player *player, struct Player *opp)
     display_show(disp);
 
     }
+
+    sprite_free(thunder);
+    sprite_free(self);
+    sprite_free(enemy);
+    sprite_free(battleground);
+    sprite_free(battleOverlay);
+    sprite_free(fightMenu);
+    sprite_free(itemsMenu);
+    sprite_free(selfHP);
+    sprite_free(enemyHP);
+    
     return 0;
 }
