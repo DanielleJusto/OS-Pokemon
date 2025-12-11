@@ -66,13 +66,13 @@ sprite_t* choose_character(void)
 
         /*UNCOMMENT TO ADD DANI*/
 
-        // graphics_draw_sprite_trans_stride(
-        //     disp,					// Load into itemsFrame buffer
-        //     216,	                // Move it towards the right
-        //     88,					// Don't move up or down
-        //     dani,				    // Load this spritesheet
-        //     0                
-        // );
+        graphics_draw_sprite_trans_stride(
+            disp,					// Load into itemsFrame buffer
+            200,	                // Move it towards the right
+            88,					// Don't move up or down
+            dani,				    // Load this spritesheet
+            0                
+        );
         if(ckeys.d_left){x = 76; y= 150; strcpy(selection, "Buddy"); character_choice = buddy; the_unwanted = dani;}
         if(ckeys.d_right){x = 216; y= 150; strcpy(selection, "Dani"); character_choice = dani; the_unwanted = buddy;}
         if(ckeys.a){choiceMade = true;}
