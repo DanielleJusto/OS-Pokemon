@@ -11,16 +11,15 @@
 #include <libdragon.h>
 #define LIBDRAGON_RDPQ_SPRITE_H
 
-
-static sprite_t *self;
-static sprite_t *enemy;
-static sprite_t *battleOverlay;
-static sprite_t *battleground;
-static sprite_t *fightMenu;
-static sprite_t *itemsMenu;
-static sprite_t *enemyHP;
-static sprite_t *selfHP;
-static sprite_t *thunder;
+sprite_t *self = NULL;
+sprite_t *enemy = NULL;
+sprite_t *battleOverlay = NULL;
+sprite_t *battleground = NULL;
+sprite_t *fightMenu = NULL;
+sprite_t *itemsMenu = NULL;
+sprite_t *enemyHP = NULL;
+sprite_t *selfHP = NULL;
+sprite_t *thunder = NULL;
 
 int select = 0;
 int turn = 0;
@@ -31,39 +30,52 @@ bool attackSelected = false;
 int itemsChoice = 0;
 int itemsFrame = 0;
 
-/*
-- Take current player and enemy as arguments
-- Add player pokemon sprites to struct?
-- Map health to player sprite 
-*/
+
+void load_battle_sprites()
+{
+    self = sprite_load("rom:/battle/self.sprite");
+    enemy = sprite_load("rom:/battle/enemy.sprite");
+    battleground = sprite_load("rom:/battle/battleground.sprite");
+    battleOverlay = sprite_load("rom:/battle/battleOverlay.sprite"); 
+    fightMenu = sprite_load("rom:/battle/p1_fightMenu.sprite");
+    selfHP = sprite_load("rom:/battle/selfHP.sprite");
+    enemyHP = sprite_load("rom:/battle/enemyHP.sprite");
+    thunder = sprite_load("rom:/battle/thunder.sprite");
+}
+
+void free_battle_sprites()
+{
+    /* Free sprites! */
+    sprite_free(self);
+    sprite_free(thunder);
+    sprite_free(enemy);
+    sprite_free(battleground);
+    sprite_free(battleOverlay);
+    sprite_free(fightMenu);
+    sprite_free(selfHP);
+    sprite_free(enemyHP);
+
+    /* Make sure pointers are empty!! */
+    self = NULL;
+    enemy = NULL;
+    battleOverlay = NULL;
+    battleground = NULL;
+    fightMenu = NULL;
+    itemsMenu = NULL;
+    enemyHP = NULL;
+    selfHP = NULL;
+    thunder = NULL;
+}
 
 int battle_loop(struct Player *player, struct Player *opp)
 {
-    debug_init_isviewer();
-    console_init();
     joypad_init();
-    debug_init_usblog();
-    console_set_debug(true);
-    display_init(RESOLUTION_320x240, DEPTH_16_BPP, 2, GAMMA_NONE, FILTERS_RESAMPLE);
-	dfs_init(DFS_DEFAULT_LOCATION);
 
     int choice = 0;
     int i = 0;
     bool fight = false;
     bool items = false;
     int *inventory = player->inventory;
-
-    thunder = sprite_load("rom:/battle/thunder.sprite");
-    self = sprite_load("rom:/battle/self.sprite");
-    enemy = sprite_load("rom:/battle/enemy.sprite");
-    battleground = sprite_load("rom:/battle/battleground.sprite");
-    battleOverlay = sprite_load("rom:/battle/battleOverlay.sprite");
-    
-    fightMenu = sprite_load("rom:/battle/p1_fightMenu.sprite");
-    itemsMenu = sprite_load("rom:/battle/itemMenu.sprite");
-
-    selfHP = sprite_load("rom:/battle/selfHP.sprite");
-    enemyHP = sprite_load("rom:/battle/enemyHP.sprite");
 
     bool gameEnd = false;
 
@@ -73,7 +85,6 @@ int battle_loop(struct Player *player, struct Player *opp)
     joypad_buttons_t ckeys = joypad_get_buttons_pressed(JOYPAD_PORT_1);
 
     graphics_fill_screen(disp, graphics_make_color(215, 215, 215, 255));
-    // graphics_draw_box(disp, 0, 0, 320, 240, graphics_make_color(215, 215, 215, 255));
     graphics_draw_sprite_trans(disp, 0, 0, battleground);
     graphics_draw_sprite_trans(disp, 0, 0, self);
     graphics_draw_sprite_trans(disp, 50, 0, enemy);
@@ -85,8 +96,7 @@ int battle_loop(struct Player *player, struct Player *opp)
 		selfHP,				    // Load this spritesheet
 		15-player->health	                
 	);
-    // graphics_draw_text(disp, 15, 30, health_str1);
-    // itoa(player->health, health_str1, 10);
+
     graphics_draw_sprite_trans_stride(
 		disp,					// Load into itemsFrame buffer
 		0,	                    // Move it towards the right
@@ -94,8 +104,7 @@ int battle_loop(struct Player *player, struct Player *opp)
 		enemyHP,				// Load this spritesheet
 		15-opp->health      // Select the next sprite in the spritesheet every 4 itemsFrames
 	);
-    // graphics_draw_text(disp, 15, 30, health_str2);
-    // itoa(enemy->health, health_str1, 10);
+
 
     graphics_draw_text(disp, 15, 15, opp->pokemon->name);
     graphics_draw_text(disp, 200, 115, player->pokemon->name);
@@ -155,14 +164,8 @@ int battle_loop(struct Player *player, struct Player *opp)
 		                    (i>>2)%36		                
 	                    );
                         i++;
-                        // usleep(500000);
-                    // }
-                    
-                    // enemy_damage++;
-                    // enemy_damage++;
                     damage(opp, 3); // Change health of player
                     gameEnd = true;
-                    // choiceMade = true;
                     choice = 0;
                     fightChoice = 0;
                 }
@@ -222,7 +225,7 @@ int battle_loop(struct Player *player, struct Player *opp)
                     // enemy_damage++;
                     damage(opp, 1);
                     gameEnd=true;
-                    // choiceMade = true;s
+                    // choiceMade = true;
                     choice = 0;
                     fightChoice = 0;
                 }
@@ -249,6 +252,7 @@ int battle_loop(struct Player *player, struct Player *opp)
             }
 
         } else if(items == true){
+            itemsMenu = sprite_load("rom:/battle/itemMenu.sprite");
             graphics_draw_sprite_trans_stride(
 		        disp,					// Load into itemsFrame buffer
 		        0,	                    // Move it towards the right
@@ -358,7 +362,7 @@ int battle_loop(struct Player *player, struct Player *opp)
 	        disp,					// Load into itemsFrame buffer
 	        0,	                    // Move it towards the right
             0,					    // Don't move up or down
-	        battleOverlay,				// Load this spritesheet
+	        battleOverlay,			// Load this spritesheet
 	        select
         );
         graphics_draw_text(disp, 30, 175, "What will");
@@ -367,20 +371,7 @@ int battle_loop(struct Player *player, struct Player *opp)
         graphics_draw_text(disp, 250, 180, "ITEM");
 
     }
-
     display_show(disp);
-
     }
-
-    sprite_free(thunder);
-    sprite_free(self);
-    sprite_free(enemy);
-    sprite_free(battleground);
-    sprite_free(battleOverlay);
-    sprite_free(fightMenu);
-    sprite_free(itemsMenu);
-    sprite_free(selfHP);
-    sprite_free(enemyHP);
-    
     return 0;
 }

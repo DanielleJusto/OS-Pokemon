@@ -12,19 +12,18 @@
 #include <malloc.h>
 #include <rdpq.h>
 #include <rdpq_sprite.h>
-// #include "battle_spaceSaver.c"
-// #include "SLL.c"
-
-static sprite_t *self;
-static sprite_t *enemy;
-static sprite_t *battleOverlay;
-static sprite_t *battleground;
 
 int main(void)
 {
-	console_init();
-	menu_loop();
+	/* SET UP DISPLAY AND DFS */
+    debug_init_isviewer();
+    console_init();
+    debug_init_usblog();
+    console_set_debug(true);
+    display_init(RESOLUTION_320x240, DEPTH_16_BPP, 2, GAMMA_NONE, FILTERS_RESAMPLE);
+    dfs_init(DFS_DEFAULT_LOCATION);
 
+	/* INITIALIZE STRUCTS */
 	struct Player player1;
 	struct Player player2;
 	struct Player *p1 = &player1;
@@ -35,18 +34,31 @@ int main(void)
 	struct Pokemon *poke1 = &pokemon1;
 	struct Pokemon *poke2 = &pokemon2;
 
+	/* BEGIN GAME */
+	menu_loop();
+
 	setup(p1, p2, poke1, poke2);
-	// sprite_t* avatar = choose_character();
-	// explore_loop(avatar);
-	// explore_loop();
-	// damage(p1, 10);
+	sprite_t* avatar = choose_character();
+	explore_loop(avatar);
+
 	bool gameEnd = false;
+
+	load_battle_sprites();
 	while(gameEnd == false){
 		battle_loop(p1,p2);
 		if (player1.health == 0 || player2.health == 0){gameEnd = true;}
 		battle_loop(p2,p1);
 		if (player1.health == 0 || player2.health == 0){gameEnd = true;}
 	}
+	free_battle_sprites();
+
 	printf("GAMEOVER!\n");
+	if (player1.health < player2.health){
+		printf("Player 1 Wins!\n");
+	} else {
+		printf("Player 2 Wins!\n");
+	}
+
+	joypad_close();
 	return 0;
 }

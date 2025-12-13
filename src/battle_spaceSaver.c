@@ -55,7 +55,6 @@ int itemsFrame = 0;
 int battle_loop(void) {
     int dfs_init(uint32_t base_fs_loc);
     dfs_init(DFS_DEFAULT_LOCATION);
-
     debug_init_isviewer();
     console_init();
     joypad_init();

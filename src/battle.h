@@ -33,9 +33,18 @@ extern struct Player player2;
 extern struct Pokemon pokemon1;
 extern struct Pokemon pokemon2;
 
-/*
-Basic setup function for two predetermined pokemon.
-*/
+/* Declare Sprite Pointers */
+extern sprite_t *self;
+extern sprite_t *enemy;
+extern sprite_t *battleOverlay;
+extern sprite_t *battleground;
+extern sprite_t *fightMenu;
+extern sprite_t *itemsMenu;
+extern sprite_t *enemyHP;
+extern sprite_t *selfHP;
+extern sprite_t *thunder;
+
+/* Basic setup function for two predetermined pokemon. */
 int setup(struct Player *p1, struct Player *p2, struct Pokemon *pokemon1, struct Pokemon *pokemon2)
 {
     // Initialize Pikachu 
@@ -69,9 +78,7 @@ int setup(struct Player *p1, struct Player *p2, struct Pokemon *pokemon1, struct
     return 0;
 }
 
-/*
-Deals damage to an opponent
-*/
+/* Deals damage to an opponent */
 int damage(struct Player *opponent, int damage){
     int health = opponent->health - damage;
     if (health < 0){
@@ -82,9 +89,7 @@ int damage(struct Player *opponent, int damage){
     return 0;
 }
 
-/*
-Heals player
-*/
+/* Heals player */
 int heal(struct Player *player, int heal_points){
     int health = player->health + heal_points;
     if (health > player->max_health){
@@ -99,27 +104,6 @@ int heal(struct Player *player, int heal_points){
 
 #endif
 
-/*
-Uses an item given the item's index (0 - Potion, 1 - Pokeball)
-Returns success of operation.
-*/
-// bool use_item(struct Player *player, int item){
-//     if (player->items[item]) == 0){
-//         return false;
-//     } else {
-//         player->items[item]--;
-//         if (item == 0){ // If potion, use potion
-//             int health = player->health + 20;
-//             if (health > player->max_health) {
-//                 player->max_health = max_health; // set upper bound
-//              } else {
-//                 player->health = health;
-//              }
-//         } else { // If pokeball, use 
-//             continue;
-//         }
-//     }
-// }
 // int pokemon_init(int player, int choice){
 //     char name[20];
 //     int health;
