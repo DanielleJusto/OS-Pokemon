@@ -22,7 +22,7 @@ sprite_t *thunder = NULL;
 sprite_t *textOverlay = NULL;
 sprite_t *itemsMenu = NULL;
 
-int select = 0;
+int selected = 0;
 int turn = 0;
 
 int fightChoice = 0;
@@ -31,6 +31,7 @@ bool attackSelected = false;
 int itemsChoice = 0;
 int itemsFrame = 0;
 bool showStats = false;
+bool attackMissed = false;
 int intro = 2;
 
 void load_battle_sprites()
@@ -74,6 +75,7 @@ void free_battle_sprites()
     textOverlay = NULL;
     itemsMenu = NULL;
 }
+
 
 int battle_loop(struct Player *player, struct Player *opp)
 {
@@ -174,7 +176,10 @@ int battle_loop(struct Player *player, struct Player *opp)
 		                    (i>>2)%36		                
 	                    );
                         i++;
-                    damage(opp, 3); // Change health of player
+                    if (damage(opp, 3) == false){
+                        attackMissed = true;
+                    }; 
+                    // Change health of player
                     gameEnd = true;
                     choice = 1;
                     fightChoice = 0;
@@ -224,7 +229,9 @@ int battle_loop(struct Player *player, struct Player *opp)
                 graphics_draw_text(disp, 35, 148, "use move?");
                 
                 if(ckeys.a){
-                    damage(opp, 1);
+                    if (damage(opp, 1) == false){
+                        attackMissed = true;
+                    };
                     gameEnd=true;
                     choice = 1;
                     fightChoice = 0;
@@ -352,11 +359,11 @@ int battle_loop(struct Player *player, struct Player *opp)
         if(ckeys.d_left){
             fight = true;
             items = false;
-            select = 1;
+            selected = 1;
         } else if(ckeys.d_right){
             items = true;
             fight = false;
-            select = 2;
+            selected = 2;
         }
 
         graphics_draw_sprite_trans_stride(
@@ -364,7 +371,7 @@ int battle_loop(struct Player *player, struct Player *opp)
 	        0,	                    // Move it towards the right
             0,					    // Don't move up or down
 	        battleOverlay,			// Load this spritesheet
-	        select
+	        selected
         );
         graphics_draw_text(disp, 30, 175, "What will");
         graphics_draw_text(disp, 30, 190, "Pikachu do?");
@@ -377,12 +384,17 @@ int battle_loop(struct Player *player, struct Player *opp)
             graphics_draw_text(disp, 24, 150, player->name);
             graphics_draw_text(disp, 70, 150,"your pokemon is");
             graphics_draw_text(disp, 200, 150, player->pokemon->name);
+        } else if (attackMissed == true){
+            graphics_draw_text(disp, 24, 150, "Attack missed!");
+            graphics_draw_text(disp, 24, 160, "Your turn, ");
+            graphics_draw_text(disp, 105, 160, player->name);
         } else {
             graphics_draw_text(disp, 24, 150, "Your turn, ");
             graphics_draw_text(disp, 105, 150, player->name);
         }
         if (ckeys.a) {
             choice = 1;
+            attackMissed = false;
             intro --;
         }
     }

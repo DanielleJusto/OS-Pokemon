@@ -46,11 +46,13 @@ int main(void)
 
 	load_battle_sprites();
 
+    srand(time(0)); // Seed for damage dice roll
+	
 	while(gameEnd == false){
 		battle_loop(p1,p2);
-		if (player1.health == 0 || player2.health == 0){gameEnd = true;}
+		if (player1.health <= 0 || player2.health <= 0){gameEnd = true; break;}
 		battle_loop(p2,p1);
-		if (player1.health == 0 || player2.health == 0){gameEnd = true;}
+		if (player1.health <= 0 || player2.health <= 0){gameEnd = true; break;}
 	}
 
 	free_battle_sprites();

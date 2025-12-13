@@ -9,6 +9,7 @@
 #include <rdpq.h>
 #include <rdpq_sprite.h>
 #include <libdragon.h>
+#include <time.h>
 
 #ifndef BATTLE_H
 #define BATTLE_H
@@ -84,14 +85,22 @@ int setup(struct Player *p1, struct Player *p2, struct Pokemon *pokemon1, struct
 }
 
 /* Deals damage to an opponent */
-int damage(struct Player *opponent, int damage){
-    int health = opponent->health - damage;
-    if (health < 0){
-        opponent->health = 0; // set lower bound
+bool damage(struct Player *opponent, int damage){
+    /* Dice Roll */
+
+    int dice_roll = (rand() % 6) + 1; // generate dice roll
+
+    if (dice_roll > 2) {
+        int health = opponent->health - damage;
+        if (health < 0){
+            opponent->health = 0; // set lower bound
+        } else {
+            opponent->health = health;
+        }; 
+        return true;
     } else {
-        opponent->health = health;
-    }; 
-    return 0;
+        return false;
+    }
 }
 
 /* Heals player */
