@@ -16,10 +16,11 @@ sprite_t *enemy = NULL;
 sprite_t *battleOverlay = NULL;
 sprite_t *battleground = NULL;
 sprite_t *fightMenu = NULL;
-sprite_t *itemsMenu = NULL;
 sprite_t *enemyHP = NULL;
 sprite_t *selfHP = NULL;
 sprite_t *thunder = NULL;
+sprite_t *textOverlay = NULL;
+sprite_t *itemsMenu = NULL;
 
 int select = 0;
 int turn = 0;
@@ -29,7 +30,8 @@ bool attackSelected = false;
 
 int itemsChoice = 0;
 int itemsFrame = 0;
-
+bool showStats = false;
+int intro = 2;
 
 void load_battle_sprites()
 {
@@ -41,6 +43,8 @@ void load_battle_sprites()
     selfHP = sprite_load("rom:/battle/selfHP.sprite");
     enemyHP = sprite_load("rom:/battle/enemyHP.sprite");
     thunder = sprite_load("rom:/battle/thunder.sprite");
+    textOverlay = sprite_load("rom:/battle/textOverlay.sprite");
+    itemsMenu = sprite_load("rom:/battle/itemMenu.sprite");
 }
 
 void free_battle_sprites()
@@ -54,6 +58,8 @@ void free_battle_sprites()
     sprite_free(fightMenu);
     sprite_free(selfHP);
     sprite_free(enemyHP);
+    sprite_free(textOverlay);
+    sprite_free(itemsMenu);
 
     /* Make sure pointers are empty!! */
     self = NULL;
@@ -65,6 +71,8 @@ void free_battle_sprites()
     enemyHP = NULL;
     selfHP = NULL;
     thunder = NULL;
+    textOverlay = NULL;
+    itemsMenu = NULL;
 }
 
 int battle_loop(struct Player *player, struct Player *opp)
@@ -89,27 +97,29 @@ int battle_loop(struct Player *player, struct Player *opp)
     graphics_draw_sprite_trans(disp, 0, 0, self);
     graphics_draw_sprite_trans(disp, 50, 0, enemy);
 
-    graphics_draw_sprite_trans_stride(
-		disp,					// Load into itemsFrame buffer
-		185,	                    // Move it towards the right
-		106,					    // Don't move up or down
-		selfHP,				    // Load this spritesheet
-		15-player->health	                
-	);
+    if (showStats == true){
+        graphics_draw_sprite_trans_stride(
+            disp,					// Load into itemsFrame buffer
+            185,	                    // Move it towards the right
+            106,					    // Don't move up or down
+            selfHP,				    // Load this spritesheet
+            15-player->health	                
+        );
 
-    graphics_draw_sprite_trans_stride(
-		disp,					// Load into itemsFrame buffer
-		0,	                    // Move it towards the right
-		0,					    // Don't move up or down
-		enemyHP,				// Load this spritesheet
-		15-opp->health      // Select the next sprite in the spritesheet every 4 itemsFrames
-	);
+        graphics_draw_sprite_trans_stride(
+            disp,					// Load into itemsFrame buffer
+            0,	                    // Move it towards the right
+            0,					    // Don't move up or down
+            enemyHP,				// Load this spritesheet
+            15-opp->health      // Select the next sprite in the spritesheet every 4 itemsFrames
+        );
 
+        graphics_draw_text(disp, 15, 15, opp->pokemon->name);
+        graphics_draw_text(disp, 200, 115, player->pokemon->name);
+    }
 
-    graphics_draw_text(disp, 15, 15, opp->pokemon->name);
-    graphics_draw_text(disp, 200, 115, player->pokemon->name);
-
-    if(choice == 1) {
+    if(choice == 2) {
+        showStats = true;
         if(fight == true){
             graphics_draw_sprite_trans_stride(
 		        disp,					// Load into itemsFrame buffer
@@ -143,7 +153,7 @@ int battle_loop(struct Player *player, struct Player *opp)
                 }
                 if(ckeys.b){
                     // exit fight menu
-                    choice = 0;
+                    choice = 1;
                     fightChoice = 0;
                 }
             } else if(fightChoice == 3){
@@ -166,7 +176,7 @@ int battle_loop(struct Player *player, struct Player *opp)
                         i++;
                     damage(opp, 3); // Change health of player
                     gameEnd = true;
-                    choice = 0;
+                    choice = 1;
                     fightChoice = 0;
                 }
                 if(ckeys.d_down){
@@ -202,7 +212,7 @@ int battle_loop(struct Player *player, struct Player *opp)
                 }
                 if(ckeys.b){
                     // exit fight menu
-                    choice = 0;
+                    choice = 1;
                     fightChoice = 0;
                 }
             } else if(fightChoice == 5){
@@ -214,19 +224,9 @@ int battle_loop(struct Player *player, struct Player *opp)
                 graphics_draw_text(disp, 35, 148, "use move?");
                 
                 if(ckeys.a){
-                    // ATTACK LOOP
-                    // graphics_draw_sprite_trans_stride(
-		            //     disp,					// Load into itemsFrame buffer
-		            //     0,	                    // Move it towards the right
-		            //     0,					    // Don't move up or down
-		            //     thunder,				    // Load this spritesheet
-		            //     0 		                
-	                // );
-                    // enemy_damage++;
                     damage(opp, 1);
                     gameEnd=true;
-                    // choiceMade = true;
-                    choice = 0;
+                    choice = 1;
                     fightChoice = 0;
                 }
                 if(ckeys.d_down){
@@ -252,7 +252,6 @@ int battle_loop(struct Player *player, struct Player *opp)
             }
 
         } else if(items == true){
-            itemsMenu = sprite_load("rom:/battle/itemMenu.sprite");
             graphics_draw_sprite_trans_stride(
 		        disp,					// Load into itemsFrame buffer
 		        0,	                    // Move it towards the right
@@ -275,10 +274,11 @@ int battle_loop(struct Player *player, struct Player *opp)
                         itemsFrame = 2;
                     }
                     if(ckeys.b) {
-                        choice = 0;
+                        choice = 1;
                         itemsFrame = 0;
                     }
                 } else if(itemsFrame == 2){
+                    /* DISPLAY ITEM INFORMATION */
                     graphics_draw_text(disp, 180, 75, "POTION");
                     graphics_draw_text(disp, 185, 90, "+20 HP");
                     if (inventory[0] == 1){
@@ -286,14 +286,14 @@ int battle_loop(struct Player *player, struct Player *opp)
                     } else if (inventory[0] == 0){
                         graphics_draw_text(disp, 185, 105, "Quantity: 0");
                     }
-                    if(15-player->health > 0 && 15-player->health != 0){
+
+                     /* HANDLE FULL HEALTH AND INVENTORY EMPTY */
+                    if(15-player->health > 0 && 15-player->health != 0 && inventory[0] == 1){
                         graphics_draw_text(disp, 185, 140, "use potion?");
                         if(ckeys.a && itemsFrame == 2){
-                            // self_damage--;
-                            // choiceMade = true;
                             heal(player, 20);
                             gameEnd = true;
-                            choice = 0;
+                            choice = 1;
                             itemsFrame = 0;
                         }
                     } else if(15-player->health == 0 && inventory[0]==1){
@@ -307,7 +307,7 @@ int battle_loop(struct Player *player, struct Player *opp)
                 } else if(itemsFrame == 3){
                     graphics_draw_text(disp, 180, 75, "POTION");
                     graphics_draw_text(disp, 185, 90, "+20 HP");
-                    if(15-player->health > 0 && 15-player->health != 0){
+                    if(15-player->health > 0 && 15-player->health != 0 && inventory[0] == 1){
                         graphics_draw_text(disp, 185, 140, "use potion?");
                     } else if(15-player->health == 0 && inventory[0]==1){
                         graphics_draw_text(disp, 185, 140, "FULL HEALTH");
@@ -329,10 +329,10 @@ int battle_loop(struct Player *player, struct Player *opp)
                 }
                 if(itemsFrame == 4){
                     if(ckeys.b) {
-                        choice = 0;
+                        choice = 1;
                         itemsFrame = 0;
                     }
-                }else if(itemsFrame == 5){
+                } else if(itemsFrame == 5){
                     graphics_draw_text(disp, 180, 75, "POKEBALL");
                     graphics_draw_text(disp, 185, 100, "you can't use");
                     graphics_draw_text(disp, 185, 115, "that now.");
@@ -342,11 +342,12 @@ int battle_loop(struct Player *player, struct Player *opp)
                 }
             }
         } else {
-            choice = 0;
-        }
-    } else if(choice == 0) {
-        if(ckeys.a) {
             choice = 1;
+        }
+    } else if(choice == 1) {
+        showStats = true;
+        if(ckeys.a) {
+            choice = 2;
         }
         if(ckeys.d_left){
             fight = true;
@@ -369,7 +370,21 @@ int battle_loop(struct Player *player, struct Player *opp)
         graphics_draw_text(disp, 30, 190, "Pikachu do?");
         graphics_draw_text(disp, 165, 180, "FIGHT");
         graphics_draw_text(disp, 250, 180, "ITEM");
-
+    } else if (choice == 0){
+        showStats = false;
+        graphics_draw_sprite_trans(disp, 0, 125, textOverlay);
+        if(intro > 0){
+            graphics_draw_text(disp, 24, 150, player->name);
+            graphics_draw_text(disp, 70, 150,"your pokemon is");
+            graphics_draw_text(disp, 200, 150, player->pokemon->name);
+        } else {
+            graphics_draw_text(disp, 24, 150, "Your turn, ");
+            graphics_draw_text(disp, 105, 150, player->name);
+        }
+        if (ckeys.a) {
+            choice = 1;
+            intro --;
+        }
     }
     display_show(disp);
     }

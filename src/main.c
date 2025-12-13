@@ -38,25 +38,29 @@ int main(void)
 	menu_loop();
 
 	setup(p1, p2, poke1, poke2);
-	sprite_t* avatar = choose_character();
-	explore_loop(avatar);
+	sprite_t* avatar1 = choose_character(p1);
+	sprite_t* avatar2 = choose_character(p2);
+	explore_loop(avatar1, avatar2);
 
 	bool gameEnd = false;
 
 	load_battle_sprites();
+
 	while(gameEnd == false){
 		battle_loop(p1,p2);
 		if (player1.health == 0 || player2.health == 0){gameEnd = true;}
 		battle_loop(p2,p1);
 		if (player1.health == 0 || player2.health == 0){gameEnd = true;}
 	}
+
 	free_battle_sprites();
 
+	/* Maybe make a screen for this */
 	printf("GAMEOVER!\n");
 	if (player1.health < player2.health){
-		printf("Player 1 Wins!\n");
+		printf("%s Wins!\n", player1.name);
 	} else {
-		printf("Player 2 Wins!\n");
+		printf("%s Wins!\n", player2.name);
 	}
 
 	joypad_close();

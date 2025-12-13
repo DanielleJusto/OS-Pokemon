@@ -22,20 +22,21 @@ typedef enum {
     UP
 } direction_t;
 
-sprite_t* choose_character(void)
+sprite_t* choose_character(struct Player *player)
 {
     joypad_init();
 
     sprite_t* buddy = sprite_load("rom:/explore/buddy.sprite");
     sprite_t* dani = sprite_load("rom:/explore/dani.sprite");
+    sprite_t *textOverlay = sprite_load("rom:/battle/textOverlay.sprite");
 
     bool choiceMade = false;
     sprite_t* character_choice = buddy;
     sprite_t* the_unwanted = dani;
     char selection[10];
-    strcpy(selection, "Buddy");
+    strcpy(selection, "BUDDY");
     int x = 76;
-    int y = 150;
+    int y= 110; 
 
     while (choiceMade == false) {
         surface_t* disp = display_get();
@@ -43,36 +44,48 @@ sprite_t* choose_character(void)
         
         joypad_buttons_t ckeys = joypad_get_buttons_pressed(JOYPAD_PORT_1);
         graphics_fill_screen(disp, graphics_make_color(154, 139, 130, 255));
-        graphics_draw_text(disp, 110, 30, "WHO ARE YOU?");
         graphics_draw_text(disp, x, y, selection);
 
         graphics_draw_sprite_trans_stride(
             disp,					// Load into itemsFrame buffer
             64,	                // Move it towards the right
-            88,					// Don't move up or down
+            44,					// Don't move up or down
             buddy,				    // Load this spritesheet
             0                
         );
 
-
         graphics_draw_sprite_trans_stride(
             disp,					// Load into itemsFrame buffer
             200,	                // Move it towards the right
-            88,					// Don't move up or down
+            44,					// Don't move up or down
             dani,				    // Load this spritesheet
             0                
         );
-        if(ckeys.d_left){x = 76; y= 150; strcpy(selection, "Buddy"); character_choice = buddy; the_unwanted = dani;}
-        if(ckeys.d_right){x = 216; y= 150; strcpy(selection, "Dani"); character_choice = dani; the_unwanted = buddy;}
-        if(ckeys.a){choiceMade = true;}
+
+        graphics_draw_sprite_trans(disp, 0, 125, textOverlay);
+
+        graphics_draw_text(disp, 24, 150, player->name);
+        graphics_draw_text(disp, 90, 150, ", who are you?");
+
+        if(ckeys.d_left){
+            x = 76;
+            strcpy(selection, "BUDDY"); 
+            character_choice = buddy; 
+            the_unwanted = dani;}
+        if(ckeys.d_right){
+            x = 216;
+            strcpy(selection, "DANI"); 
+            character_choice = dani; 
+            the_unwanted = buddy;}
+        if(ckeys.a){strcpy(player->name, selection);choiceMade = true;}
         display_show(disp);
     }
     sprite_free(the_unwanted);
-    joypad_close();
+    sprite_free(textOverlay);
     return character_choice;
 }
 
-int explore_loop(sprite_t* avatar)
+int explore_loop(sprite_t* avatar1,sprite_t* avatar2)
 {
     joypad_init();
 
@@ -136,8 +149,8 @@ int explore_loop(sprite_t* avatar)
         int sprite_index = frame + (dir * 4);
 
         // Draw the sprite
-        graphics_draw_sprite_trans_stride(disp, x, y, avatar, sprite_index);
-
+        graphics_draw_sprite_trans_stride(disp, x, y, avatar1, sprite_index);
+        graphics_draw_sprite_trans_stride(disp, x+40, y, avatar2, sprite_index);
         display_show(disp);
 
         if (buttons.start) {
@@ -145,6 +158,7 @@ int explore_loop(sprite_t* avatar)
         }
         moving = false;
     }
-    sprite_free(avatar);
+    sprite_free(avatar1);
+    sprite_free(avatar2);
     return 0;
 }
