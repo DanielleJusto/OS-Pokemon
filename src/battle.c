@@ -102,8 +102,8 @@ int battle_loop(struct Player *player, struct Player *opp)
     if (showStats == true){
         graphics_draw_sprite_trans_stride(
             disp,					// Load into itemsFrame buffer
-            185,	                    // Move it towards the right
-            106,					    // Don't move up or down
+            185,	                // Move it towards the right
+            106,					// Don't move up or down
             selfHP,				    // Load this spritesheet
             15-player->health	                
         );
@@ -131,8 +131,8 @@ int battle_loop(struct Player *player, struct Player *opp)
 		        fightChoice
 	        );
             if(fightChoice == 0){
-                graphics_draw_text(disp, 30, 170, "Thunder");
-                graphics_draw_text(disp, 180, 170, "Scratch");
+                graphics_draw_text(disp, 30, 170, player->pokemon->attacks[0]);
+                graphics_draw_text(disp, 180, 170, player->pokemon->attacks[1]);
                 if(ckeys.d_left){
                     // Select Thunder
                     fightChoice = 1;
@@ -143,8 +143,8 @@ int battle_loop(struct Player *player, struct Player *opp)
                 }
             } else if(fightChoice == 1){
                 // Thunder move currently selected
-                graphics_draw_text(disp, 30, 170, "Thunder");
-                graphics_draw_text(disp, 180, 170, "Scratch");
+                graphics_draw_text(disp, 30, 170, player->pokemon->attacks[0]);
+                graphics_draw_text(disp, 180, 170, player->pokemon->attacks[1]);
                 if(ckeys.a){
                     // shows move stats and prompt user to use move
                     fightChoice = 3;
@@ -160,8 +160,8 @@ int battle_loop(struct Player *player, struct Player *opp)
                 }
             } else if(fightChoice == 3){
                 // STATS + Use Thunder -> Yes
-                graphics_draw_text(disp, 30, 170, "Thunder");
-                graphics_draw_text(disp, 180, 85, "THUNDER");
+                graphics_draw_text(disp, 30, 170, player->pokemon->attacks[0]);
+                graphics_draw_text(disp, 180, 85, player->pokemon->attacks[0]);
                 graphics_draw_text(disp, 185, 100, "Power: 20");
                 graphics_draw_text(disp, 185, 115, "Accuracy: 100");
                 graphics_draw_text(disp, 185, 148, "use move?");
@@ -190,8 +190,8 @@ int battle_loop(struct Player *player, struct Player *opp)
                 }
             } else if(fightChoice == 4){
                 // STATS + Use Thunder -> No
-                graphics_draw_text(disp, 30, 170, "Thunder");
-                graphics_draw_text(disp, 180, 85, "THUNDER");
+                graphics_draw_text(disp, 30, 170, player->pokemon->attacks[0]);
+                graphics_draw_text(disp, 180, 85, player->pokemon->attacks[0]);
                 graphics_draw_text(disp, 185, 100, "Power: 20");
                 graphics_draw_text(disp, 185, 115, "Accuracy: 100");
                 graphics_draw_text(disp, 185, 148, "use move?");
@@ -205,8 +205,8 @@ int battle_loop(struct Player *player, struct Player *opp)
                 }
             } else if(fightChoice == 2){
                 // SCRATCH selected
-                graphics_draw_text(disp, 30, 170, "Thunder");
-                graphics_draw_text(disp, 180, 170, "Scratch");
+                graphics_draw_text(disp, 30, 170, player->pokemon->attacks[0]);
+                graphics_draw_text(disp, 180, 170, player->pokemon->attacks[1]);
                 if(ckeys.d_left){
                     // select Thunder
                     fightChoice = 1;
@@ -222,8 +222,8 @@ int battle_loop(struct Player *player, struct Player *opp)
                 }
             } else if(fightChoice == 5){
                 // STATS + use Scratch -> YES
-                graphics_draw_text(disp, 180, 170, "Scratch");
-                graphics_draw_text(disp, 30, 85, "SCRATCH");
+                graphics_draw_text(disp, 180, 170, player->pokemon->attacks[1]);
+                graphics_draw_text(disp, 30, 85, player->pokemon->attacks[1]);
                 graphics_draw_text(disp, 35, 100, "Power: 10");
                 graphics_draw_text(disp, 35, 115, "Accuracy: 100");
                 graphics_draw_text(disp, 35, 148, "use move?");
@@ -242,8 +242,8 @@ int battle_loop(struct Player *player, struct Player *opp)
                 }
             } else if(fightChoice == 6){
                 // STATS + use Scratch -> NO
-                graphics_draw_text(disp, 180, 170, "Scratch");
-                graphics_draw_text(disp, 30, 85, "SCRATCH");
+                graphics_draw_text(disp, 180, 170, player->pokemon->attacks[1]);
+                graphics_draw_text(disp, 30, 85, player->pokemon->attacks[1]);
                 graphics_draw_text(disp, 35, 100, "Power: 10");
                 graphics_draw_text(disp, 35, 115, "Accuracy: 100");
                 graphics_draw_text(disp, 35, 148, "use move?");
@@ -374,7 +374,8 @@ int battle_loop(struct Player *player, struct Player *opp)
 	        selected
         );
         graphics_draw_text(disp, 30, 175, "What will");
-        graphics_draw_text(disp, 30, 190, "Pikachu do?");
+        graphics_draw_text(disp, 30, 190, player->pokemon->name);
+        graphics_draw_text(disp, 30, 205, "do?");
         graphics_draw_text(disp, 165, 180, "FIGHT");
         graphics_draw_text(disp, 250, 180, "ITEM");
     } else if (choice == 0){
@@ -386,8 +387,8 @@ int battle_loop(struct Player *player, struct Player *opp)
             graphics_draw_text(disp, 200, 150, player->pokemon->name);
         } else if (attackMissed == true){
             graphics_draw_text(disp, 24, 150, "Attack missed!");
-            graphics_draw_text(disp, 24, 160, "Your turn, ");
-            graphics_draw_text(disp, 105, 160, player->name);
+            graphics_draw_text(disp, 24, 165, "Your turn, ");
+            graphics_draw_text(disp, 105, 165, player->name);
         } else {
             graphics_draw_text(disp, 24, 150, "Your turn, ");
             graphics_draw_text(disp, 105, 150, player->name);
