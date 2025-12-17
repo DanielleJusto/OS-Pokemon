@@ -11,8 +11,6 @@
 #include <libdragon.h>
 #define LIBDRAGON_RDPQ_SPRITE_H
 
-sprite_t *self = NULL;
-sprite_t *enemy = NULL;
 sprite_t *battleOverlay = NULL;
 sprite_t *battleground = NULL;
 sprite_t *fightMenu = NULL;
@@ -36,8 +34,6 @@ int intro = 2;
 
 void load_battle_sprites()
 {
-    self = sprite_load("rom:/battle/self.sprite");
-    enemy = sprite_load("rom:/battle/enemy.sprite");
     battleground = sprite_load("rom:/battle/battleground.sprite");
     battleOverlay = sprite_load("rom:/battle/battleOverlay.sprite"); 
     fightMenu = sprite_load("rom:/battle/p1_fightMenu.sprite");
@@ -51,9 +47,7 @@ void load_battle_sprites()
 void free_battle_sprites()
 {
     /* Free sprites! */
-    sprite_free(self);
     sprite_free(thunder);
-    sprite_free(enemy);
     sprite_free(battleground);
     sprite_free(battleOverlay);
     sprite_free(fightMenu);
@@ -63,8 +57,6 @@ void free_battle_sprites()
     sprite_free(itemsMenu);
 
     /* Make sure pointers are empty!! */
-    self = NULL;
-    enemy = NULL;
     battleOverlay = NULL;
     battleground = NULL;
     fightMenu = NULL;
@@ -76,6 +68,11 @@ void free_battle_sprites()
     itemsMenu = NULL;
 }
 
+void free_pokemon_sprites(struct Pokemon *pokemon){
+    /* Free sprites! */
+    sprite_free(pokemon->front);
+    sprite_free(pokemon->back);
+}
 
 int battle_loop(struct Player *player, struct Player *opp)
 {
@@ -96,8 +93,19 @@ int battle_loop(struct Player *player, struct Player *opp)
 
     graphics_fill_screen(disp, graphics_make_color(215, 215, 215, 255));
     graphics_draw_sprite_trans(disp, 0, 0, battleground);
-    graphics_draw_sprite_trans(disp, 0, 0, self);
-    graphics_draw_sprite_trans(disp, 50, 0, enemy);
+
+    /* Adjust sprite offset */
+    if (strcmp("Pikachu", player->pokemon->name) == 0){
+        graphics_draw_sprite_trans(disp, 0, 0, player->pokemon->back);
+    } else {
+        graphics_draw_sprite_trans(disp, 0, -15, player->pokemon->back);
+    }
+
+    if (strcmp("Charmander", opp->pokemon->name) == 0){
+        graphics_draw_sprite_trans(disp, 50, 0, opp->pokemon->front);
+    } else {
+        graphics_draw_sprite_trans(disp, 50, 0, opp->pokemon->front);
+    }
 
     if (showStats == true){
         graphics_draw_sprite_trans_stride(

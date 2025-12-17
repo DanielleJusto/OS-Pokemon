@@ -1,10 +1,10 @@
 #include <stdio.h>
 #include <libdragon.h>
-// #include <sprite.h>
 #include "menu.c"
 #include "battle.h"
 #include "battle.c" 
 #include "explore.c"
+#include "gameOver.c"
 #include <math.h>
 #include <stdint.h>
 #include <stdlib.h>
@@ -57,14 +57,18 @@ int main(void)
 
 	free_battle_sprites();
 
-	/* Maybe make a screen for this */
-	printf("GAMEOVER!\n");
 	if (player1.health < player2.health){
-		printf("%s Wins!\n", player1.name);
+		gameOver(p2);
 	} else {
-		printf("%s Wins!\n", player2.name);
+		gameOver(p1);
 	}
 
+	/*Clean up pokemon sprites*/
+
+	free_pokemon_sprites(poke1);
+	free_pokemon_sprites(poke2);
+
+	console_clear();
 	joypad_close();
 	return 0;
 }

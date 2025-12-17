@@ -31,6 +31,8 @@ struct Pokemon{
     char name[10];
     int health;
     char attacks[2][20];
+    sprite_t *front;
+    sprite_t *back;
 };
 
 struct Player {
@@ -56,12 +58,16 @@ int setup(struct Player *p1, struct Player *p2, struct Pokemon *pokemon1, struct
     pokemon1->health = 15;
     strcpy(pokemon1->attacks[0], "THUNDER"); // Name of Attack 1
     strcpy(pokemon1->attacks[1], "SCRATCH"); // Name of Attack 2
+    pokemon1->front = sprite_load("rom:/battle/pikachuFront240.sprite");
+    pokemon1->back = sprite_load("rom:/battle/pikachuBack.sprite");
 
     // Initialize Charmander
     strcpy(pokemon2->name, "Charmander");
     pokemon2->health = 15;
-    strcpy(pokemon2->attacks[0], "EMBER"); // Name of Attack 1
-    strcpy(pokemon2->attacks[1], "SCRATCH"); // Name of Attack 2
+    strcpy(pokemon2->attacks[0], "EMBER"); 
+    strcpy(pokemon2->attacks[1], "SCRATCH");
+    pokemon2->front = sprite_load("rom:/battle/charmanderFront.sprite");
+    pokemon2->back = sprite_load("rom:/battle/charmanderBack.sprite");
 
     /* Initialize Player 1 */
     strcpy(p1->name, "Player 1");
@@ -69,8 +75,8 @@ int setup(struct Player *p1, struct Player *p2, struct Pokemon *pokemon1, struct
     p1->health = pokemon1->health;
     p1->max_health = p1->health;
     memcpy(p1->attacks, pokemon1->attacks, sizeof(p2->attacks));
-    p1->inventory[0] = 1; // 1 potion
-    p1->inventory[1] = 1; // 1 pokeball
+    p1->inventory[0] = 1;
+    p1->inventory[1] = 1;
      
     /* Initialize Player 2 */
     strcpy(p2->name, "Player 2");
@@ -86,7 +92,6 @@ int setup(struct Player *p1, struct Player *p2, struct Pokemon *pokemon1, struct
 
 /* Deals damage to an opponent */
 bool damage(struct Player *opponent, int damage){
-    /* Dice Roll */
 
     int dice_roll = (rand() % 6) + 1; // generate dice roll
 

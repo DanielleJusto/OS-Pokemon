@@ -14,12 +14,6 @@
 
 static sprite_t *sprite;
 static sprite_t *title;
-// sprite_t *textOverlay;
-
-/* Menu/Load Screen 
-    - Print title to screen
-    - Play button --> when pressed start game
-*/ 
 
 int menu_loop(void)
 {
@@ -27,7 +21,6 @@ int menu_loop(void)
 
     sprite = sprite_load("rom:/pixelPikachu.sprite");
     title = sprite_load("rom:/menu/TITLE.sprite");
-    // textOverlay = sprite_load("rom:/menu/textOverlay.sprite");
 
 	bool game_start = false;
 
@@ -53,7 +46,6 @@ int menu_loop(void)
 	}
 	sprite_free(sprite);
 	sprite_free(title);
-	// sprite_free(textOverlay);
 
 	return 0;
 }
