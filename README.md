@@ -1,6 +1,6 @@
 # Nintendo 64 Pokémon Battle Game
 **By: Dani and Buddy** <br> <br>
-For our Operating Systems course final project, we developed a simple Pokémon Battle game that can be played on the Nintendo 64. <br>
+For our Operating Systems course final project, we developed a simple Pokémon Battle game that can be played on the Nintendo 64. <br> <br>
 Features of our game include:
 * Load Screen
 * Character Selection 
