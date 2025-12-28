@@ -14,10 +14,10 @@ int gameOver(struct Player *player)
     sprite_t *textOverlay = sprite_load("rom:/battle/textOverlay.sprite");
 
     sprite_t *winner;
-    if(strcmp("BUDDY", player->name)){
+    if(strcmp("BUDDY", player->name) == 0){
         winner = sprite_load("rom:/explore/buddy.sprite");
     } else {
-        winner = sprite_load("rom:/explore/buddy.sprite");;
+        winner = sprite_load("rom:/explore/dani.sprite");
     }
 
     joypad_init();

@@ -42,31 +42,35 @@ int main(void)
 	sprite_t* avatar2 = choose_character(p2);
 	explore_loop(avatar1, avatar2);
 
-	bool gameEnd = false;
+	// bool gameEnd = false;
 
-	load_battle_sprites();
+	// load_battle_sprites();
 
-    srand(time(0)); // Seed for damage dice roll
+    // srand(time(0)); // Seed for damage dice roll
 	
-	while(gameEnd == false){
-		battle_loop(p1,p2);
-		if (player1.health <= 0 || player2.health <= 0){gameEnd = true; break;}
-		battle_loop(p2,p1);
-		if (player1.health <= 0 || player2.health <= 0){gameEnd = true; break;}
-	}
+	// while(gameEnd == false){
+	// 	battle_loop(p1,p2);
+	// 	if (player1.health <= 0 || player2.health <= 0){gameEnd = true; break;}
+	// 	battle_loop(p2,p1);
+	// 	if (player1.health <= 0 || player2.health <= 0){gameEnd = true; break;}
+	// }
 
-	free_battle_sprites();
+	// free_battle_sprites();
+	player1.health = 0;
+	player2.health = 15;
 
+	while(1){
 	if (player1.health < player2.health){
-		gameOver(p2);
-	} else {
 		gameOver(p1);
+	} else{
+		gameOver(p2);
 	}
+}
 
 	/*Clean up pokemon sprites*/
 
-	free_pokemon_sprites(poke1);
-	free_pokemon_sprites(poke2);
+	// free_pokemon_sprites(poke1);
+	// free_pokemon_sprites(poke2);
 
 	console_clear();
 	joypad_close();
